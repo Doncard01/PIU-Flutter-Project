@@ -1,0 +1,22 @@
+Nazwa projektu: Smart dom one for all
+Skrót: SM4RT
+
+Funkcje:
+1. Obsługa wszystkich dostępnych inteligentych urządzeń za pomocą jednego interfejsu typu:(oświetlenie, rolety, lodówka, zamki, kamery, odkurzacz, pralka, itd.)
+2. Tworzenia użytkowników obsługujących nasz inteligenty dom oraz możliwość przydzielnia im uprawnienień do poszczególnych urządzeń.
+3. Tworzenia "domów" z podziałem na pomieszczenia.
+4. Przydzielania urządzeń do pomieszeń.
+5. Wysyłanie powiadomień do użytkownika w momencie np: zepsucia urządzenia, reakcji kamery na ruch, gwałtowy spadek temperatury w lodówce.
+6. Ustawienie "daily routine"
+7. Obsługa urządzeń za pomocą asystenta głosowego.
+
+Przypadki użycia:
+1. Użytkownik posiada wiele inteligentych urządzeń różnych firm: Amazon Echo Dot 4, żarówki Philips hue, lodówka samsuga, odkurzacz xiaomi. Użytkownik chciały mieć możliwość
+obsługi ich za pomocą jednej aplikacji.
+2. Użytkownik nie chce, aby każdy człowiek znajdujący się w jego mieszkaniu mógł korzystać z określonych urządzeń, więc wykorzystuje możliwość przydzielania uprawnień użytkownikom.
+3. Użytkownik chce, aby o określonych godzinach wykonywały się poszczególne funkcje jego urządzeń.
+4. Kontrolowanie domu z dowolnego miejsca na ziemi.
+5. Użytkownik chce, aby informowano go przy pomocy powiadomienia o na przykład: awariach w domu, wycieku gazu, pozostawieniu otwartego mieszakania,
+ gdy żaden domownik się w nim nie znajduje.
+6. Monitorowanie zużycia np. wody oraz gazu(szczególnie użyteczne w wypadku posiadaniu wielu domów).
+
