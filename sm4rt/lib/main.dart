@@ -24,7 +24,7 @@ class Device {
 class SmartHomesScreen extends StatefulWidget {
   final List<SmartHome> smartHomes;
 
-  SmartHomesScreen({required this.smartHomes});
+  const SmartHomesScreen({super.key, required this.smartHomes});
 
   @override
   _SmartHomesScreenState createState() => _SmartHomesScreenState();
@@ -35,7 +35,7 @@ class _SmartHomesScreenState extends State<SmartHomesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sm4rt'),
+        title: const Text('Sm4rt'),
         backgroundColor: const Color.fromARGB(255, 0, 50, 92),
       ),
       body: ListView.builder(
@@ -46,7 +46,7 @@ class _SmartHomesScreenState extends State<SmartHomesScreen> {
             child: ListTile(
               title: Text(
                 smartHome.name,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
                 ),
@@ -79,25 +79,24 @@ class _SmartHomesScreenState extends State<SmartHomesScreen> {
                 );
               },
               trailing: IconButton(
-                icon: Icon(Icons.delete),
+                icon: const Icon(Icons.delete),
                 onPressed: () {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text('Delete Smart Home'),
-                        content: Text('Are you sure you want to delete this smart home?'),
+                        title: const Text('Delete Smart Home'),
+                        content: const Text('Are you sure you want to delete this smart home?'),
                         actions: [
                           TextButton(
-                            child: Text('Cancel'),
+                            child: const Text('Cancel'),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
                           ),
                           TextButton(
-                            child: Text('Delete'),
                             style: TextButton.styleFrom(
-                              primary: Colors.red,
+                              foregroundColor: Colors.red,
                             ),
                             onPressed: () {
                               setState(() {
@@ -105,6 +104,7 @@ class _SmartHomesScreenState extends State<SmartHomesScreen> {
                               });
                               Navigator.of(context).pop();
                             },
+                            child: const Text('Delete'),
                           ),
                         ],
                       );
@@ -117,23 +117,23 @@ class _SmartHomesScreenState extends State<SmartHomesScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              TextEditingController _nameController = TextEditingController();
+              TextEditingController nameController = TextEditingController();
               return AlertDialog(
-                title: Text('Add Smart Home'),
+                title: const Text('Add Smart Home'),
                 content: TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
+                  controller: nameController,
+                  decoration: const InputDecoration(
                     labelText: 'Home Name',
                   ),
                 ),
                 actions: [
                   TextButton(
-                    child: Text(
+                    child: const Text(
                       'Cancel',
                       style: TextStyle(color: Colors.red),
                     ),
@@ -142,12 +142,12 @@ class _SmartHomesScreenState extends State<SmartHomesScreen> {
                     },
                   ),
                   TextButton(
-                    child: Text(
+                    child: const Text(
                       'Add',
                       style: TextStyle(color: Colors.green),
                     ),
                     onPressed: () {
-                      String name = _nameController.text;
+                      String name = nameController.text;
                       SmartHome smartHome = SmartHome(name: name, rooms: []);
                       setState(() {
                         widget.smartHomes.add(smartHome);
@@ -176,7 +176,7 @@ class _SmartHomesScreenState extends State<SmartHomesScreen> {
 class SmartHomeScreen extends StatefulWidget {
   final SmartHome smartHome;
 
-  SmartHomeScreen({required this.smartHome});
+  const SmartHomeScreen({super.key, required this.smartHome});
 
   @override
   _SmartHomeScreenState createState() => _SmartHomeScreenState();
@@ -200,7 +200,7 @@ class _SmartHomeScreenState extends State<SmartHomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.smartHome.name),
-        backgroundColor: Color.fromARGB(255, 0, 50, 92),
+        backgroundColor: const Color.fromARGB(255, 0, 50, 92),
       ),
       body: ListView.builder(
         itemCount: widget.smartHome.rooms.length,
@@ -208,11 +208,11 @@ class _SmartHomeScreenState extends State<SmartHomeScreen> {
           Room room = widget.smartHome.rooms[index];
           return Card(
             elevation: 2.0,
-            margin: EdgeInsets.all(8.0),
+            margin: const EdgeInsets.all(8.0),
             child: ExpansionTile(
               title: Text(
                 room.name,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.bold,
                 ),
@@ -224,54 +224,54 @@ class _SmartHomeScreenState extends State<SmartHomeScreen> {
               children: [
                 ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: room.devices.length,
                   itemBuilder: (BuildContext context, int index) {
                     Device device = room.devices[index];
                     return Card(
-                      margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                      margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                       child: ListTile(
                         title: Text(
                           device.name,
-                          style: TextStyle(fontSize: 16.0),
+                          style: const TextStyle(fontSize: 16.0),
                         ),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             ElevatedButton(
-                              child: Text(
-                                device.isOn ? 'On' : 'Off',
-                                style: TextStyle(fontSize: 12.0),
-                              ),
                               style: ElevatedButton.styleFrom(
-                                primary: device.isOn ? Colors.green : Colors.red,
+                                backgroundColor: device.isOn ? Colors.green : Colors.red,
                               ),
                               onPressed: () {
                                 setState(() {
                                   device.isOn = !device.isOn;
                                 });
                               },
+                              child: Text(
+                                device.isOn ? 'On' : 'Off',
+                                style: const TextStyle(fontSize: 12.0),
+                              ),
                             ),
-                            SizedBox(width: 10.0),
+                            const SizedBox(width: 10.0),
                             GestureDetector(
                               onTap: () {
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: Text('Delete Device'),
-                                      content: Text(
+                                      title: const Text('Delete Device'),
+                                      content: const Text(
                                         'Are you sure you want to delete this device?',
                                       ),
                                       actions: [
                                         TextButton(
-                                          child: Text('Cancel'),
+                                          child: const Text('Cancel'),
                                           onPressed: () {
                                             Navigator.of(context).pop();
                                           },
                                         ),
                                         TextButton(
-                                          child: Text(
+                                          child: const Text(
                                             'Delete',
                                             style: TextStyle(color: Colors.red),
                                           ),
@@ -285,7 +285,7 @@ class _SmartHomeScreenState extends State<SmartHomeScreen> {
                                   },
                                 );
                               },
-                              child: Icon(
+                              child: const Icon(
                                 Icons.delete,
                                 color: Colors.grey,
                               ),
@@ -297,8 +297,8 @@ class _SmartHomeScreenState extends State<SmartHomeScreen> {
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.add),
-                  title: Text(
+                  leading: const Icon(Icons.add),
+                  title: const Text(
                     'Add Device',
                     style: TextStyle(fontSize: 16.0),
                   ),
@@ -306,19 +306,19 @@ class _SmartHomeScreenState extends State<SmartHomeScreen> {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        TextEditingController _nameController =
+                        TextEditingController nameController =
                             TextEditingController();
                         return AlertDialog(
-                          title: Text('Add Device'),
+                          title: const Text('Add Device'),
                           content: TextField(
-                            controller: _nameController,
-                            decoration: InputDecoration(
+                            controller: nameController,
+                            decoration: const InputDecoration(
                               labelText: 'Device Name',
                             ),
                           ),
                           actions: [
                             TextButton(
-                              child: Text(
+                              child: const Text(
                                 'Cancel',
                                 style: TextStyle(color: Colors.red),
                               ),
@@ -327,12 +327,12 @@ class _SmartHomeScreenState extends State<SmartHomeScreen> {
                               },
                             ),
                             TextButton(
-                              child: Text(
+                              child: const Text(
                                 'Add',
                                 style: TextStyle(color: Colors.green),
                               ),
                               onPressed: () {
-                                String name = _nameController.text;
+                                String name = nameController.text;
                                 setState(() {
                                   room.devices.add(Device(name: name));
                                 });
@@ -346,8 +346,8 @@ class _SmartHomeScreenState extends State<SmartHomeScreen> {
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.delete),
-                  title: Text(
+                  leading: const Icon(Icons.delete),
+                  title: const Text(
                     'Delete Room',
                     style: TextStyle(fontSize: 16.0),
                   ),
@@ -356,19 +356,19 @@ class _SmartHomeScreenState extends State<SmartHomeScreen> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('Delete Room'),
-                          content: Text(
+                          title: const Text('Delete Room'),
+                          content: const Text(
                             'Are you sure you want to delete this room?',
                           ),
                           actions: [
                             TextButton(
-                              child: Text('Cancel'),
+                              child: const Text('Cancel'),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
                             ),
                             TextButton(
-                              child: Text(
+                              child: const Text(
                                 'Delete',
                                 style: TextStyle(color: Colors.red),
                               ),
@@ -389,23 +389,23 @@ class _SmartHomeScreenState extends State<SmartHomeScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              TextEditingController _nameController = TextEditingController();
+              TextEditingController nameController = TextEditingController();
               return AlertDialog(
-                title: Text('Add Room'),
+                title: const Text('Add Room'),
                 content: TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
+                  controller: nameController,
+                  decoration: const InputDecoration(
                     labelText: 'Room Name',
                   ),
                 ),
                 actions: [
                   TextButton(
-                    child: Text(
+                    child: const Text(
                       'Cancel',
                       style: TextStyle(color: Colors.red),
                     ),
@@ -414,12 +414,12 @@ class _SmartHomeScreenState extends State<SmartHomeScreen> {
                     },
                   ),
                   TextButton(
-                    child: Text(
+                    child: const Text(
                       'Add',
                       style: TextStyle(color: Colors.green),
                     ),
                     onPressed: () {
-                      String name = _nameController.text;
+                      String name = nameController.text;
                       setState(() {
                         widget.smartHome.rooms.add(Room(name: name, devices: []));
                       });
