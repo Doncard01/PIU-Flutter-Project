@@ -1,24 +1,5 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const Sm4rtHomeApp());
-}
-
-class Sm4rtHomeApp extends StatelessWidget {
-  const Sm4rtHomeApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Sm4rt Home',
-      theme: ThemeData(
-        primarySwatch: Colors.orange,
-      ),
-      home: const SmartHomesScreen(),
-    );
-  }
-}
-
 class SmartHome {
   final String name;
   final List<Room> rooms;
@@ -28,131 +9,377 @@ class SmartHome {
 
 class Room {
   final String name;
-  final List<SmartDevice> devices;
+  final List<Device> devices;
 
   Room({required this.name, required this.devices});
 }
 
-class SmartDevice {
+class Device {
   final String name;
-  final String type;
   bool isOn;
-  double brightness;
 
-  SmartDevice({required this.name, required this.type, this.isOn = false, this.brightness = 1.0});
+  Device({required this.name, this.isOn = false});
 }
 
 class SmartHomesScreen extends StatefulWidget {
+  final List<SmartHome> smartHomes;
 
-  const SmartHomesScreen({super.key});
+  SmartHomesScreen({required this.smartHomes});
 
   @override
-  State<SmartHomesScreen> createState() => _SmartHomesScreenState();
+  _SmartHomesScreenState createState() => _SmartHomesScreenState();
 }
 
 class _SmartHomesScreenState extends State<SmartHomesScreen> {
-  final SmartHomeService smartHomeService = SmartHomeService();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Smart Homes'),
+        title: Text('Sm4rt'),
+        backgroundColor: const Color.fromARGB(255, 0, 50, 92),
       ),
       body: ListView.builder(
-        itemCount: smartHomeService.smartHomes.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SmartHomeDetailsScreen(smartHome: smartHomeService.smartHomes[index]),
+        itemCount: widget.smartHomes.length,
+        itemBuilder: (BuildContext context, int index) {
+          SmartHome smartHome = widget.smartHomes[index];
+          return Card(
+            child: ListTile(
+              title: Text(
+                smartHome.name,
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
                 ),
-              );
-            },
-            child: Card(
-              margin: const EdgeInsets.all(8.0),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      smartHomeService.smartHomes[index].name,
-                      style: const TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                      ),
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${smartHome.rooms.length} room',
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      color: Colors.grey[600],
                     ),
-                    const SizedBox(height: 8.0),
-                    Text(
-                      'Number of Rooms: ${smartHomeService.smartHomes[index].rooms.length}',
-                      style: const TextStyle(
-                        fontSize: 16.0,
-                      ),
+                  ),
+                  Text(
+                    '${totalDevices(smartHome)} devices',
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      color: Colors.grey[600],
                     ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SmartHomeScreen(smartHome: smartHome),
+                  ),
+                );
+              },
+              trailing: IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Delete Smart Home'),
+                        content: Text('Are you sure you want to delete this smart home?'),
+                        actions: [
+                          TextButton(
+                            child: Text('Cancel'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          TextButton(
+                            child: Text('Delete'),
+                            style: TextButton.styleFrom(
+                              primary: Colors.red,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                widget.smartHomes.removeAt(index);
+                              });
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
               ),
             ),
           );
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              TextEditingController _nameController = TextEditingController();
+              return AlertDialog(
+                title: Text('Add Smart Home'),
+                content: TextField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Home Name',
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                      'Add',
+                      style: TextStyle(color: Colors.green),
+                    ),
+                    onPressed: () {
+                      String name = _nameController.text;
+                      SmartHome smartHome = SmartHome(name: name, rooms: []);
+                      setState(() {
+                        widget.smartHomes.add(smartHome);
+                      });
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      ),
     );
+  }
+
+  int totalDevices(SmartHome smartHome) {
+    int count = 0;
+    for (var room in smartHome.rooms) {
+      count += room.devices.length;
+    }
+    return count;
   }
 }
 
-class SmartHomeDetailsScreen extends StatefulWidget {
+class SmartHomeScreen extends StatefulWidget {
   final SmartHome smartHome;
 
-  const SmartHomeDetailsScreen({super.key, required this.smartHome});
+  SmartHomeScreen({required this.smartHome});
 
   @override
-  State<SmartHomeDetailsScreen> createState() => _SmartHomeDetailsScreenState();
+  _SmartHomeScreenState createState() => _SmartHomeScreenState();
 }
 
-class _SmartHomeDetailsScreenState extends State<SmartHomeDetailsScreen> {
+class _SmartHomeScreenState extends State<SmartHomeScreen> {
+  void _deleteDevice(Room room, Device device) {
+    setState(() {
+      room.devices.remove(device);
+    });
+  }
+
+  void _deleteRoom(Room room) {
+    setState(() {
+      widget.smartHome.rooms.remove(room);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.smartHome.name),
+        backgroundColor: Color.fromARGB(255, 0, 50, 92),
       ),
       body: ListView.builder(
         itemCount: widget.smartHome.rooms.length,
-        itemBuilder: (context, index) {
+        itemBuilder: (BuildContext context, int index) {
+          Room room = widget.smartHome.rooms[index];
           return Card(
-            margin: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    widget.smartHome.rooms[index].name,
-                    style: const TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+            elevation: 2.0,
+            margin: EdgeInsets.all(8.0),
+            child: ExpansionTile(
+              title: Text(
+                room.name,
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
                 ),
-                const Divider(),
+              ),
+              subtitle: Text(
+                '${room.devices.length} devices',
+                style: TextStyle(fontSize: 14.0, color: Colors.grey[600]),
+              ),
+              children: [
                 ListView.builder(
                   shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: widget.smartHome.rooms[index].devices.length,
-                  itemBuilder: (context, deviceIndex) {
-                    SmartDevice device = widget.smartHome.rooms[index].devices[deviceIndex];
-                    return ListTile(
-                      title: Text(device.name),
-                      subtitle: Text(device.type),
-                      trailing: IconButton(
-                        icon: Icon(device.isOn ? Icons.power_settings_new : Icons.power_settings_new_rounded),
-                        onPressed: () {
-                          device.isOn = !device.isOn;
-                        },
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: room.devices.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    Device device = room.devices[index];
+                    return Card(
+                      margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                      child: ListTile(
+                        title: Text(
+                          device.name,
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ElevatedButton(
+                              child: Text(
+                                device.isOn ? 'On' : 'Off',
+                                style: TextStyle(fontSize: 12.0),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                primary: device.isOn ? Colors.green : Colors.red,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  device.isOn = !device.isOn;
+                                });
+                              },
+                            ),
+                            SizedBox(width: 10.0),
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Delete Device'),
+                                      content: Text(
+                                        'Are you sure you want to delete this device?',
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          child: Text('Cancel'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                        TextButton(
+                                          child: Text(
+                                            'Delete',
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                          onPressed: () {
+                                            _deleteDevice(room, device);
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: Icon(
+                                Icons.delete,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.add),
+                  title: Text(
+                    'Add Device',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        TextEditingController _nameController =
+                            TextEditingController();
+                        return AlertDialog(
+                          title: Text('Add Device'),
+                          content: TextField(
+                            controller: _nameController,
+                            decoration: InputDecoration(
+                              labelText: 'Device Name',
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              child: Text(
+                                'Cancel',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            TextButton(
+                              child: Text(
+                                'Add',
+                                style: TextStyle(color: Colors.green),
+                              ),
+                              onPressed: () {
+                                String name = _nameController.text;
+                                setState(() {
+                                  room.devices.add(Device(name: name));
+                                });
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.delete),
+                  title: Text(
+                    'Delete Room',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Delete Room'),
+                          content: Text(
+                            'Are you sure you want to delete this room?',
+                          ),
+                          actions: [
+                            TextButton(
+                              child: Text('Cancel'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            TextButton(
+                              child: Text(
+                                'Delete',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                              onPressed: () {
+                                _deleteRoom(room);
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
                     );
                   },
                 ),
@@ -160,60 +387,101 @@ class _SmartHomeDetailsScreenState extends State<SmartHomeDetailsScreen> {
             ),
           );
         },
-      )
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              TextEditingController _nameController = TextEditingController();
+              return AlertDialog(
+                title: Text('Add Room'),
+                content: TextField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Room Name',
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                      'Add',
+                      style: TextStyle(color: Colors.green),
+                    ),
+                    onPressed: () {
+                      String name = _nameController.text;
+                      setState(() {
+                        widget.smartHome.rooms.add(Room(name: name, devices: []));
+                      });
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
 
-class SmartHomeService {
-  final List<SmartHome> _smartHomes = [
+
+void main() {
+  List<SmartHome> smartHomes = [
     SmartHome(
-      name: 'Smart Home 1',
+      name: 'Dom 1',
       rooms: [
         Room(
-          name: 'Living Room',
+          name: 'Pokój 1',
           devices: [
-            SmartDevice(name: 'Lamp', type: 'Lighting', isOn: true),
-            SmartDevice(name: 'TV', type: 'Television'),
+            Device(name: 'Urządzenie 1'),
+            Device(name: 'Urządzenie 2'),
           ],
         ),
         Room(
-          name: 'Kitchen',
+          name: 'Pokój 2',
           devices: [
-            SmartDevice(name: 'Refrigerator', type: 'Appliance'),
-            SmartDevice(name: 'Oven', type: 'Appliance', isOn: true),
+            Device(name: 'Urządzenie 3'),
+            Device(name: 'Urządzenie 4'),
           ],
         ),
       ],
     ),
     SmartHome(
-      name: 'Smart Home 2',
+      name: 'Dom 2',
       rooms: [
         Room(
-          name: 'Bedroom',
+          name: 'Pokój 1',
           devices: [
-            SmartDevice(name: 'Smart Lock', type: 'Security'),
-            SmartDevice(name: 'Air Purifier', type: 'Air Quality', isOn: true),
+            Device(name: 'Urządzenie 1'),
+            Device(name: 'Urządzenie 2'),
+          ],
+        ),
+        Room(
+          name: 'Pokój 2',
+          devices: [
+            Device(name: 'Urządzenie 3'),
+            Device(name: 'Urządzenie 4'),
           ],
         ),
       ],
     ),
   ];
 
-  List<SmartHome> get smartHomes => _smartHomes;
-
-  void addSmartHome(SmartHome smartHome) {
-    _smartHomes.add(smartHome);
-  }
-
-  void removeSmartHome(SmartHome smartHome) {
-    _smartHomes.remove(smartHome);
-  }
-
-  void updateSmartHome(SmartHome oldSmartHome, SmartHome newSmartHome) {
-    int index = _smartHomes.indexOf(oldSmartHome);
-    if (index != -1) {
-      _smartHomes[index] = newSmartHome;
-    }
-  }
+  runApp(MaterialApp(
+    home: SmartHomesScreen(
+      smartHomes: smartHomes,
+    ),
+  ));
 }
