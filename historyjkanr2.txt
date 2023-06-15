@@ -1,0 +1,6 @@
+Historyjka nr 2:
+Użytkownik wchodzi do aplikacji Sm4rt.
+Użytkownik wprowadza swoje dane do logowania.
+Po zalogowaniu się pokazana zostaje lista domów, do których użytkownik ma dostęp.
+Użytkownik klika w prawy górnym rogu w ikonę przenoszącą go do menu przyznawania uprawnień.
+Z menu uprawnień uprawnień użytkownik przydziela uprawnienia do poszczególnych pokoi/urządzeń dla istniejących już użytkowników.

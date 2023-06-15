@@ -1,0 +1,7 @@
+Historyjka nr 1:
+Użytkownik wchodzi do aplikacji Sm4rt.
+Użytkownik wprowadza swoje dane do logowania.
+Po zalogowaniu się pokazana zostaje lista domów, do których użytkownik ma dostęp.
+Po wybraniu domu na ekranie pojawiają się pokoje dostępne w danym domu.
+Po przejściu do pokoju użytkownik wybiera urządzenie, które chce obsłużyć.
+Użytkownik korzysta z dostępnych funkcjonalności przypisanych do urządzenia.

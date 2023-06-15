@@ -1,0 +1,6 @@
+Historyjka nr 3:
+Użytkownik wchodzi do aplikacji Sm4rt.
+Użytkownik wprowadza swoje dane do logowania.
+Po zalogowaniu się pokazana zostaje lista domów, do których użytkownik ma dostęp.
+Użytkownik klika w prawy górnym rogu w ikonę przenoszącą go do menu tworzenia użytkowników.
+Po przejściu do kolejnej karty, tworzy nowych użytkownikówi przydziela im opcję admina bądź zwykłego użytkownika.
